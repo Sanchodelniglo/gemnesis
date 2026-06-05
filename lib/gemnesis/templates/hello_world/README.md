@@ -2,12 +2,12 @@
 
 A Sega Mega Drive / Genesis ROM, scaffolded by [`gemnesis`](https://github.com/sanchodelniglo/gemnesis).
 
-## Build & run
+## Build & play
 
 ```bash
-gemnesis run        # build + launch BlastEm
-gemnesis build      # build only → out/rom.bin
-gemnesis doctor     # verify your environment
+gemnesis build      # builds → out/rom.bin
+open out/rom.bin    # opens in your registered Mega Drive emulator
+gemnesis doctor     # if anything goes wrong, run this first
 ```
 
 ## What this does

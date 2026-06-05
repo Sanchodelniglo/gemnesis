@@ -80,12 +80,12 @@ module Gemnesis
       retroarch_app = "/Applications/RetroArch.app/Contents/MacOS/RetroArch"
 
       if blastem
-        ok("Emulator", "blastem at #{blastem}")
+        ok("Emulator", "blastem at #{blastem} (open out/rom.bin to play)")
       elsif File.executable?(retroarch_app)
-        ok("Emulator", "RetroArch (Genesis Plus GX core via fallback)")
+        ok("Emulator", "RetroArch detected (open out/rom.bin to play)")
       else
-        warn("Emulator", "none found — install via `brew install --cask retroarch` " \
-                         "(M3-friendly) or `GEMNESIS_EMULATOR=<cmd>` override")
+        warn("Emulator", "none detected — install via `brew install --cask retroarch` " \
+                         "to play your ROM (any Mega Drive emulator works)")
       end
     end
 

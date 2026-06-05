@@ -15,8 +15,6 @@ Versioning: [SemVer](https://semver.org/spec/v2.0.0.html).
 - `gemnesis build` — parses `gemnesis.rb`, writes `src/config.h`, invokes
   SGDK image via Docker (`docker run --rm -v $PWD:/src … make`), reports
   `out/rom.bin` size. Auto-pulls image on first run.
-- `gemnesis run` — builds then launches BlastEm; falls back gracefully with
-  a brew install hint if BlastEm isn't on PATH.
 - `gemnesis clean` — removes `out/`, `src/config.h`, generated resource
   files, and `.o/.elf/.lst/.map` artifacts. Idempotent.
 - `gemnesis version` — prints gem version.
@@ -28,6 +26,11 @@ Versioning: [SemVer](https://semver.org/spec/v2.0.0.html).
 - GitHub Actions CI: lint + unit specs on every push; real-Docker
   integration build gated on main pushes via `GEMNESIS_INTEGRATION=1`.
 - `.github/` issue + PR templates.
+
+### Changed
+- Dropped the planned `gemnesis run` command — the gem's contract is to
+  produce a playable ROM, not pick the user's emulator. Run the resulting
+  `out/rom.bin` in RetroArch, BlastEm, or any Mega Drive emulator of choice.
 
 ### Security
 - `gemnesis.rb` is loaded via `Kernel.load` — the trust model matches a

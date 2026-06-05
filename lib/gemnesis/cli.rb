@@ -24,7 +24,7 @@ module Gemnesis
       exit 1
     end
 
-    desc "doctor", "Check environment (Docker, SGDK image, BlastEm, Ruby)"
+    desc "doctor", "Check environment (Docker, SGDK image, emulator, Ruby)"
     def doctor
       require "gemnesis/doctor"
       exit Gemnesis::Doctor.new.run
@@ -34,17 +34,6 @@ module Gemnesis
     def build
       require "gemnesis/builder"
       exit Gemnesis::Builder.new(verbose: options[:verbose]).run
-    rescue Gemnesis::Error => e
-      warn "Error: #{e.message}"
-      exit 1
-    end
-
-    # `run` is a Thor reserved word — register the command name, define under an alias
-    desc "run", "Build ROM and launch BlastEm"
-    map "run" => :launch
-    def launch
-      require "gemnesis/emulator"
-      exit Gemnesis::Emulator.new(verbose: options[:verbose]).run
     rescue Gemnesis::Error => e
       warn "Error: #{e.message}"
       exit 1

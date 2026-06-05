@@ -8,11 +8,12 @@ Make Sega Mega Drive / Genesis games using Ruby tooling.
 gem install gemnesis
 gemnesis new my_game
 cd my_game
-gemnesis run
+gemnesis build
+open out/rom.bin   # opens in your registered Mega Drive emulator
 ```
 
-Four commands, ~30 seconds, and a playable ROM with a hero sprite you can move
-with the D-pad is running in your emulator.
+A few commands, ~30 seconds, and you have a real cartridge image — boots in
+any Mega Drive emulator, plays a hero sprite you can move with the D-pad.
 
 ## Why?
 
@@ -31,10 +32,13 @@ gem handles the rest.
 - **`gemnesis build`** spins SGDK in Docker, cross-compiles to m68k assembly,
   packs assets, produces a real cartridge image (`out/rom.bin`) you could burn
   to a Flash cart and play on actual hardware.
-- **`gemnesis run`** builds, then opens the ROM in RetroArch (Genesis Plus GX
-  core) or BlastEm — whichever you have installed.
 - **`gemnesis doctor`** checks your environment in one shot.
 - **`gemnesis clean`** removes build artifacts.
+
+Run the resulting `out/rom.bin` in any Mega Drive emulator —
+[RetroArch](https://www.retroarch.com/) (Genesis Plus GX core) is a great pick
+on Apple Silicon. `open out/rom.bin` from your terminal hands it to whatever
+emulator your OS associates with `.bin`.
 
 ## Who it's for
 
