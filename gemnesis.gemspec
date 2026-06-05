@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "gemnesis"
   spec.version       = Gemnesis::VERSION
   spec.authors       = ["Romain Grossard"]
-  spec.email         = ["romain.grossard@wecasa.fr"]
+  spec.email         = ["rgrossadr@gmail.com"]
 
   spec.summary       = "Scaffold, build, and run Sega Mega Drive ROMs from Ruby (experimental)"
   spec.description   = "A Ruby CLI that wraps SGDK via Docker to scaffold, build, and run " \
