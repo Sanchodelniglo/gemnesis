@@ -43,12 +43,20 @@ module Gemnesis
     desc "run", "Build ROM and launch BlastEm"
     map "run" => :launch
     def launch
-      raise NotImplementedError, "emulator launcher lands in PLAN-MVP Phase 7"
+      require "gemnesis/emulator"
+      exit Gemnesis::Emulator.new(verbose: options[:verbose]).run
+    rescue Gemnesis::Error => e
+      warn "Error: #{e.message}"
+      exit 1
     end
 
-    desc "clean", "Remove build artifacts (out/)"
+    desc "clean", "Remove build artifacts (out/, src/config.h, generated resources)"
     def clean
-      raise NotImplementedError, "clean lands in PLAN-MVP Phase 8"
+      require "gemnesis/cleaner"
+      exit Gemnesis::Cleaner.new.run
+    rescue Gemnesis::Error => e
+      warn "Error: #{e.message}"
+      exit 1
     end
   end
 end
