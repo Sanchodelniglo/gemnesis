@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Scaffold, build, and run Sega Mega Drive ROMs from Ruby (experimental)"
   spec.description   = "A Ruby CLI that wraps SGDK via Docker to scaffold, build, and run " \
                        "Sega Mega Drive / Genesis homebrew ROMs. Pre-alpha — API will change."
-  spec.homepage      = "https://github.com/wecasa/gemnesis"
+  spec.homepage      = "https://github.com/sanchodelniglo/gemnesis"
   spec.license       = "MIT"
   spec.required_ruby_version = ">= 3.4.0"
 
