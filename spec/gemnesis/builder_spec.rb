@@ -81,8 +81,8 @@ RSpec.describe Gemnesis::Builder do
       allow(instance).to receive(:capture).with("docker", "image", "inspect", "custom/sgdk:v1").and_return(["", ok])
       allow(instance).to receive(:capture).with("docker", "manifest", "inspect",
                                                 "custom/sgdk:v1").and_return(["", nope])
-      allow(instance).to receive(:capture).with("docker", "run", "--rm", "-v", anything, "-w", "/src",
-                                                "custom/sgdk:v1", "make") do
+      allow(instance).to receive(:capture).with("docker", "run", "--rm", "--platform", "linux/amd64",
+                                                "-v", anything, "custom/sgdk:v1") do
         FileUtils.mkdir_p(File.join(@tmp, "out"))
         File.write(File.join(@tmp, "out", "rom.bin"), "x")
         ["", ok]

@@ -75,10 +75,14 @@ module Gemnesis
     end
 
     def docker_build
+      # `--platform linux/amd64` keeps the build deterministic on Apple Silicon:
+      # the SGDK image is x86-only and Docker will use Rosetta to emulate.
+      # The image's ENTRYPOINT runs `make -f $SGDK_PATH/makefile.gen $@` so we
+      # don't pass `make` — empty $@ means "build default target".
       cmd = ["docker", "run", "--rm",
+             "--platform", "linux/amd64",
              "-v", "#{@project_dir}:/src",
-             "-w", "/src",
-             image, "make"]
+             image]
 
       if @verbose
         success = stream(*cmd)

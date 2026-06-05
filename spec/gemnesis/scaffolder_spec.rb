@@ -25,7 +25,6 @@ RSpec.describe Gemnesis::Scaffolder do
       expect(File).to exist(File.join(project, "src/main.c"))
       expect(File).to exist(File.join(project, "res/resources.res"))
       expect(File).to exist(File.join(project, "res/hero.png"))
-      expect(File).to exist(File.join(project, "Makefile"))
       expect(File).to exist(File.join(project, "README.md"))
       expect(File).to exist(File.join(project, ".gitignore"))
     end
