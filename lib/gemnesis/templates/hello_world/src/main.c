@@ -1,8 +1,9 @@
 /*
  * {{NAME}} — Sega Mega Drive ROM scaffolded by gemnesis.
  *
- * Shows the word "GEMNESIS" and a hero sprite you can move with the D-pad.
- * Read each comment to learn the SGDK building blocks.
+ * Boots into a tiny lab scene: a portal, a monitor, a shelf of flasks,
+ * a counter, a tiled floor — and a hero you can move with the D-pad.
+ * Every comment explains a Mega Drive / SGDK building block.
  */
 #include <genesis.h>
 #include "resources.h"
@@ -25,13 +26,23 @@ static void handle_input(void)
 
 int main(bool hardReset)
 {
-    /* Apply the sprite's bundled palette to PAL1 (PAL0 stays for text). */
-    PAL_setPalette(PAL1, hero_sprite.palette->data, DMA);
+    /* Two palettes: PAL2 for the lab background, PAL1 for the hero sprite.
+     * PAL0 stays the default font palette (used by VDP_drawText). */
+    PAL_setPalette(PAL2, lab_bg.palette->data,       DMA);
+    PAL_setPalette(PAL1, hero_sprite.palette->data,  DMA);
 
-    /* Print a label on the BG plane using the default font (PAL0). */
-    VDP_drawText("GEMNESIS", 16, 2);
+    /* Draw the lab BG on plane A. Its unique tiles get loaded into VRAM
+     * starting at TILE_USER_INDEX (a constant SGDK reserves for us). */
+    VDP_drawImageEx(BG_A, &lab_bg,
+                    TILE_ATTR_FULL(PAL2, FALSE, FALSE, FALSE, TILE_USER_INDEX),
+                    0, 0, FALSE, CPU);
 
-    /* Sprite engine: init, then add our hero on palette 1, tile 0. */
+    /* Render text on the OTHER plane (BG_B) so it sits on top without
+     * trampling our background tiles. */
+    VDP_setTextPlane(BG_B);
+    VDP_drawText("GEMNESIS LAB", 14, 2);
+
+    /* Sprite engine: initialize, then add our hero at center. */
     SPR_init();
     hero = SPR_addSprite(&hero_sprite, hero_x, hero_y,
                          TILE_ATTR(PAL1, 0, FALSE, FALSE));

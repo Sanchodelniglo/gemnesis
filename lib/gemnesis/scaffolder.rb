@@ -11,6 +11,7 @@ module Gemnesis
     TEMPLATE_DIR = File.expand_path("templates/hello_world", __dir__)
     NAME_RE = /\A[a-z0-9][a-z0-9_-]{0,62}\z/i
     BINARY_EXT = %w[.png .bin .gif .jpg].freeze
+    PNG_FILES = %w[hero.png lab_bg.png].freeze
     VALID_REGIONS = %w[ntsc pal both].freeze
 
     def initialize(name, attrs: {}, base_dir: Dir.pwd, io: $stdout)

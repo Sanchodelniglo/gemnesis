@@ -12,6 +12,7 @@ AllCops:
     - "out/**/*"
     - "lessons/**/src/**/*"
     - "lib/gemnesis/templates/**/*"   # user-facing, hands-off
+    - "script/**/*"                    # one-off asset generators
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
