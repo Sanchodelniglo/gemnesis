@@ -32,7 +32,11 @@ module Gemnesis
 
     desc "build", "Build ROM via SGDK Docker image"
     def build
-      raise NotImplementedError, "builder lands in PLAN-MVP Phase 6"
+      require "gemnesis/builder"
+      exit Gemnesis::Builder.new(verbose: options[:verbose]).run
+    rescue Gemnesis::Error => e
+      warn "Error: #{e.message}"
+      exit 1
     end
 
     # `run` is a Thor reserved word — register the command name, define under an alias

@@ -28,6 +28,14 @@ Metrics/BlockLength:
     - "*.gemspec"
     - "Rakefile"
 
+Metrics/MethodLength:
+  Max: 15
+
+Style/Documentation:
+  Exclude:
+    - "lib/gemnesis.rb"
+    - "lib/gemnesis/config.rb"   # reopens Gemnesis module — class-level docs already cover intent
+
 # Specs read better with multiple expectations + setup-heavy examples.
 RSpec/MultipleExpectations:
   Max: 8
