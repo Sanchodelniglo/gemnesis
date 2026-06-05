@@ -26,3 +26,16 @@ Metrics/BlockLength:
     - "spec/**/*"
     - "*.gemspec"
     - "Rakefile"
+
+# Specs read better with multiple expectations + setup-heavy examples.
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/ExampleLength:
+  Max: 15
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/StubbedMock:
+  Enabled: false

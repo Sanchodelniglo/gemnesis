@@ -22,7 +22,8 @@ module Gemnesis
 
     desc "doctor", "Check environment (Docker, SGDK image, BlastEm, Ruby)"
     def doctor
-      raise NotImplementedError, "doctor lands in PLAN-MVP Phase 3"
+      require "gemnesis/doctor"
+      exit Gemnesis::Doctor.new.run
     end
 
     desc "build", "Build ROM via SGDK Docker image"
