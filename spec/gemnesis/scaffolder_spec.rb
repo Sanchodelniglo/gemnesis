@@ -33,9 +33,33 @@ RSpec.describe Gemnesis::Scaffolder do
       scaffold("super-game").run
 
       project = File.join(@tmp, "super-game")
-      expect(File.read("#{project}/gemnesis.rb")).to include('g.title  = "super-game"')
       expect(File.read("#{project}/README.md")).to start_with("# super-game")
       expect(File.read("#{project}/src/main.c")).to include("super-game")
+    end
+
+    it "fills gemnesis.rb from attrs (title, author, region)" do
+      described_class.new("hero",
+                          attrs: { title: "Hero Quest", author: "Alice", region: "pal" },
+                          base_dir: @tmp, io: io).run
+
+      gemnesis_rb = File.read(File.join(@tmp, "hero", "gemnesis.rb"))
+      expect(gemnesis_rb).to include('g.title  = "Hero Quest"')
+      expect(gemnesis_rb).to include("g.region = :pal")
+      expect(gemnesis_rb).to include('g.author = "Alice"')
+    end
+
+    it "defaults title from a humanized project name, region :ntsc, author 'You'" do
+      scaffold("my-cool-game").run
+      gemnesis_rb = File.read(File.join(@tmp, "my-cool-game", "gemnesis.rb"))
+      expect(gemnesis_rb).to include('g.title  = "My Cool Game"')
+      expect(gemnesis_rb).to include("g.region = :ntsc")
+      expect(gemnesis_rb).to include('g.author = "You"')
+    end
+
+    it "rejects an invalid region in attrs" do
+      expect do
+        described_class.new("x", attrs: { region: "japan" }, base_dir: @tmp, io: io).run
+      end.to raise_error(Gemnesis::Error, /invalid region/)
     end
 
     it "leaves binary files (PNG) untouched" do
@@ -58,7 +82,7 @@ RSpec.describe Gemnesis::Scaffolder do
 
     it "prints next steps on success" do
       scaffold("demo").run
-      expect(io.string).to include("Created demo/", "gemnesis run")
+      expect(io.string).to include("Created demo/", "gemnesis build")
     end
   end
 end

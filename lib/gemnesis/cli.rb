@@ -16,12 +16,46 @@ module Gemnesis
     end
 
     desc "new NAME", "Scaffold a new gemnesis project"
+    method_option :yes, type: :boolean, aliases: "-y", desc: "Skip prompts, use defaults"
     def new(name)
       require "gemnesis/scaffolder"
-      exit Gemnesis::Scaffolder.new(name).run
+      attrs = collect_new_attrs(name)
+      exit Gemnesis::Scaffolder.new(name, attrs: attrs).run
     rescue Gemnesis::Error => e
       warn "Error: #{e.message}"
       exit 1
+    end
+
+    no_commands do
+      def collect_new_attrs(name)
+        defaults = default_attrs(name)
+        return defaults if options[:yes] || !$stdin.tty?
+
+        say "Configuring #{name} — press Enter to accept defaults.", :cyan
+        {
+          title: ask("  Title?  [#{defaults[:title]}]", default: defaults[:title]),
+          author: ask("  Author? [#{defaults[:author]}]",  default: defaults[:author]),
+          region: ask("  Region? [#{defaults[:region]}]",  default: defaults[:region],
+                                                           limited_to: Gemnesis::Scaffolder::VALID_REGIONS)
+        }
+      end
+
+      def default_attrs(name)
+        {
+          title: humanize_name(name),
+          author: git_user || "You",
+          region: "ntsc"
+        }
+      end
+
+      def humanize_name(name)
+        name.tr("-_", " ").split.map(&:capitalize).join(" ")
+      end
+
+      def git_user
+        out = `git config user.name 2>/dev/null`.strip
+        out.empty? ? nil : out
+      end
     end
 
     desc "doctor", "Check environment (Docker, SGDK image, emulator, Ruby)"
