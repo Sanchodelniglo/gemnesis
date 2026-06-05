@@ -5,6 +5,7 @@ require "open3"
 require "rbconfig"
 
 require_relative "config"
+require_relative "rom_header"
 
 module Gemnesis
   # Compiles a gemnesis project ROM by invoking the SGDK Docker image.
@@ -28,6 +29,7 @@ module Gemnesis
       ensure_project_root!
       cfg = Config.load_file(File.join(@project_dir, "gemnesis.rb"))
       write_config_header(cfg)
+      write_rom_header(cfg)
       ensure_image
       warn_on_rosetta_fallback
       docker_build
@@ -47,6 +49,12 @@ module Gemnesis
       target = File.join(@project_dir, "src", "config.h")
       FileUtils.mkdir_p(File.dirname(target))
       File.write(target, cfg.to_header)
+    end
+
+    def write_rom_header(cfg)
+      target = File.join(@project_dir, "src", "boot", "rom_head.c")
+      FileUtils.mkdir_p(File.dirname(target))
+      File.write(target, RomHeader.new(cfg).to_c)
     end
 
     def image

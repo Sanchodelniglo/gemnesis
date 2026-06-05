@@ -7,7 +7,7 @@ module Gemnesis
   # rescomp-generated resource files. Safe to re-run.
   class Cleaner
     REMOVABLE_DIRS  = ["out", "src/boot"].freeze
-    REMOVABLE_FILES = ["src/config.h", "res/resources.h", "res/resources.s"].freeze
+    REMOVABLE_FILES = ["src/config.h", "src/boot/rom_head.c", "res/resources.h", "res/resources.s"].freeze
     REMOVABLE_GLOBS = ["src/**/*.o", "**/*.elf", "**/*.lst", "**/*.map"].freeze
 
     def initialize(project_dir: Dir.pwd, io: $stdout)
