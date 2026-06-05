@@ -33,16 +33,18 @@ RSpec.describe Gemnesis::Doctor do
       end
     end
 
-    context "when blastem is missing but docker present" do
+    context "when no emulator is available" do
       it "warns (does not fail)" do
         instance = doctor
         allow(instance).to receive(:which).and_call_original
         allow(instance).to receive(:which).with("docker").and_return("/usr/bin/docker")
         allow(instance).to receive(:which).with("blastem").and_return(nil)
+        allow(File).to receive(:executable?).and_call_original
+        allow(File).to receive(:executable?).with(%r{/RetroArch}).and_return(false)
         allow(instance).to receive(:run_cmd).and_return(["1.0", instance_double(Process::Status, success?: true)])
 
         expect(instance.run).to eq(0)
-        expect(io.string).to include("⚠", "BlastEm", "brew install blastem")
+        expect(io.string).to include("⚠", "Emulator", "retroarch")
       end
     end
 

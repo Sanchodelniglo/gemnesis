@@ -76,10 +76,16 @@ module Gemnesis
     end
 
     def check_blastem
-      if which("blastem")
-        ok("BlastEm", which("blastem"))
+      blastem = which("blastem")
+      retroarch_app = "/Applications/RetroArch.app/Contents/MacOS/RetroArch"
+
+      if blastem
+        ok("Emulator", "blastem at #{blastem}")
+      elsif File.executable?(retroarch_app)
+        ok("Emulator", "RetroArch (Genesis Plus GX core via fallback)")
       else
-        warn("BlastEm", "not on PATH — install: brew install blastem (only needed for `gemnesis run`)")
+        warn("Emulator", "none found — install via `brew install --cask retroarch` " \
+                         "(M3-friendly) or `GEMNESIS_EMULATOR=<cmd>` override")
       end
     end
 

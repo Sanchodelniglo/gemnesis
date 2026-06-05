@@ -25,42 +25,74 @@ RSpec.describe Gemnesis::Emulator do
     File.write(File.join(@tmp, "out", "rom.bin"), "x")
   end
 
+  # Default: isolate from real RetroArch on this machine. Tests that want
+  # the fallback path opt back in by stubbing the const to a real file.
+  before do
+    stub_const("#{described_class}::RETROARCH_APP", "/nonexistent/RetroArch")
+    stub_const("#{described_class}::GENESIS_CORE",  "/nonexistent/core.dylib")
+  end
+
+  def make_executable(dir, name)
+    FileUtils.mkdir_p(dir)
+    path = File.join(dir, name)
+    File.write(path, "")
+    File.chmod(0o755, path)
+    path
+  end
+
   describe "#run" do
-    it "warns and exits 0 when blastem is missing" do
+    it "uses GEMNESIS_EMULATOR override when set" do
+      instance = emulator(env: { "GEMNESIS_EMULATOR" => "/usr/local/bin/custom" })
+      stub_successful_build
+      allow(instance).to receive(:system).with("/usr/local/bin/custom", anything).and_return(true)
+
+      expect(instance.run).to eq(0)
+      expect(io.string).to include("Launching /usr/local/bin/custom")
+    end
+
+    it "prefers blastem when it is on PATH" do
+      bin_dir = File.join(@tmp, "bin")
+      blastem = make_executable(bin_dir, "blastem")
+
+      instance = emulator(env: { "PATH" => bin_dir })
+      stub_successful_build
+      allow(instance).to receive(:system).with(blastem, anything).and_return(true)
+
+      expect(instance.run).to eq(0)
+      expect(io.string).to include("Launching", "blastem")
+    end
+
+    it "falls back to RetroArch + Genesis Plus GX core when blastem absent" do
+      core = File.join(@tmp, "core.dylib")
+      File.write(core, "")
+      retroarch = make_executable(@tmp, "RetroArch")
+      stub_const("#{described_class}::RETROARCH_APP", retroarch)
+
+      instance = emulator(env: { "GEMNESIS_RETROARCH_CORE" => core })
+      stub_successful_build
+      allow(instance).to receive(:system).with(retroarch, "-L", core, anything).and_return(true)
+
+      expect(instance.run).to eq(0)
+      expect(io.string).to include("Launching #{retroarch}")
+    end
+
+    it "prints install hint when nothing is available" do
       instance = emulator
       stub_successful_build
 
       expect(instance.run).to eq(0)
-      expect(io.string).to include("⚠", "blastem not found", "brew install blastem")
+      expect(io.string).to include("⚠", "No emulator found", "brew install --cask retroarch")
     end
 
-    it "launches blastem when on PATH" do
-      blastem_dir = File.join(@tmp, "bin")
-      FileUtils.mkdir_p(blastem_dir)
-      blastem = File.join(blastem_dir, "blastem")
-      File.write(blastem, "#!/bin/sh\nexit 0\n")
-      File.chmod(0o755, blastem)
+    it "raises when emulator exits non-zero" do
+      bin_dir = File.join(@tmp, "bin")
+      make_executable(bin_dir, "blastem")
 
-      instance = emulator(env: { "PATH" => blastem_dir })
+      instance = emulator(env: { "PATH" => bin_dir })
       stub_successful_build
-      allow(instance).to receive(:system).with("blastem", anything).and_return(true)
+      allow(instance).to receive(:system).and_return(false)
 
-      expect(instance.run).to eq(0)
-      expect(io.string).to include("Launching blastem")
-    end
-
-    it "raises when blastem exits non-zero" do
-      blastem_dir = File.join(@tmp, "bin")
-      FileUtils.mkdir_p(blastem_dir)
-      blastem = File.join(blastem_dir, "blastem")
-      File.write(blastem, "")
-      File.chmod(0o755, blastem)
-
-      instance = emulator(env: { "PATH" => blastem_dir })
-      stub_successful_build
-      allow(instance).to receive(:system).with("blastem", anything).and_return(false)
-
-      expect { instance.run }.to raise_error(Gemnesis::Error, /blastem.*non-zero/)
+      expect { instance.run }.to raise_error(Gemnesis::Error, /emulator.*non-zero/)
     end
   end
 end
