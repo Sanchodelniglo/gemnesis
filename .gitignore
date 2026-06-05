@@ -1,5 +1,6 @@
 # Ruby
 *.gem
+pkg/
 *.rbc
 .bundle/
 .config/

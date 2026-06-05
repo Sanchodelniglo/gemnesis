@@ -28,7 +28,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    # Gated: only on main pushes (Docker pull is slow)
+    # Gated: only on main pushes (Docker pull is ~slow).
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +39,4 @@ jobs:
       - name: Pull SGDK image
         run: docker pull ghcr.io/stephane-d/sgdk:latest
       - name: Build sample ROM
-        run: |
-          # Placeholder — full integration test lands with PLAN-MVP Phase 9
-          echo "Integration test stub. Scaffolder + builder not yet implemented."
+        run: GEMNESIS_INTEGRATION=1 bundle exec rake integration

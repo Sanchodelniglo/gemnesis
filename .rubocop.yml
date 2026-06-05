@@ -52,3 +52,8 @@ RSpec/StubbedMock:
 # `around` hooks legitimately need instance vars to expose the tmpdir to examples.
 RSpec/InstanceVariable:
   Enabled: false
+
+# Integration specs describe a CLI behavior, not a class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/integration/**/*"
