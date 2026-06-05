@@ -1,0 +1,9 @@
+out/
+*.o
+*.elf
+*.bin
+*.map
+*.lst
+src/boot/
+res/resources.h
+res/resources.s

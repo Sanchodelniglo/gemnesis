@@ -17,7 +17,11 @@ module Gemnesis
 
     desc "new NAME", "Scaffold a new gemnesis project"
     def new(name)
-      raise NotImplementedError, "scaffolder lands in PLAN-MVP Phase 4 (name=#{name})"
+      require "gemnesis/scaffolder"
+      exit Gemnesis::Scaffolder.new(name).run
+    rescue Gemnesis::Error => e
+      warn "Error: #{e.message}"
+      exit 1
     end
 
     desc "doctor", "Check environment (Docker, SGDK image, BlastEm, Ruby)"

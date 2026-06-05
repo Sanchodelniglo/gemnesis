@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-rspec
 
@@ -11,6 +11,7 @@ AllCops:
     - "tmp/**/*"
     - "out/**/*"
     - "lessons/**/src/**/*"
+    - "lib/gemnesis/templates/**/*"   # user-facing, hands-off
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -29,7 +30,7 @@ Metrics/BlockLength:
 
 # Specs read better with multiple expectations + setup-heavy examples.
 RSpec/MultipleExpectations:
-  Max: 5
+  Max: 8
 
 RSpec/ExampleLength:
   Max: 15
@@ -38,4 +39,8 @@ RSpec/MessageSpies:
   Enabled: false
 
 RSpec/StubbedMock:
+  Enabled: false
+
+# `around` hooks legitimately need instance vars to expose the tmpdir to examples.
+RSpec/InstanceVariable:
   Enabled: false
