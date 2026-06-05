@@ -27,6 +27,7 @@ module Gemnesis
       check_docker_daemon
       check_sgdk_image
       check_blastem
+      check_home
       render
       exit_code
     end
@@ -86,6 +87,18 @@ module Gemnesis
       else
         warn("Emulator", "none detected — install via `brew install --cask retroarch` " \
                          "to play your ROM (any Mega Drive emulator works)")
+      end
+    end
+
+    def check_home
+      home = File.expand_path(@env.fetch("GEMNESIS_HOME", "~/gemnesis"))
+      label = @env.key?("GEMNESIS_HOME") ? "Projects home (GEMNESIS_HOME)" : "Projects home"
+      if File.directory?(home)
+        count = Dir.children(home).count { |c| File.directory?(File.join(home, c)) }
+        suffix = count == 1 ? "project" : "projects"
+        ok(label, "#{home} (#{count} #{suffix})")
+      else
+        ok(label, "#{home} (will be created on first `gemnesis new`)")
       end
     end
 

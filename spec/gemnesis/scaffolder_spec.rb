@@ -83,7 +83,7 @@ RSpec.describe Gemnesis::Scaffolder do
 
     it "prints next steps on success" do
       scaffold("demo").run
-      expect(io.string).to include("Created demo/", "gemnesis build")
+      expect(io.string).to include("Created", "demo", "gemnesis build")
     end
   end
 end

@@ -85,8 +85,8 @@ module Gemnesis
     end
 
     def announce(target)
-      @io.puts "Created #{@name}/"
-      @io.puts "  cd #{File.basename(target)}"
+      @io.puts "Created #{target}"
+      @io.puts "  cd #{target}"
       @io.puts "  gemnesis build"
     end
   end

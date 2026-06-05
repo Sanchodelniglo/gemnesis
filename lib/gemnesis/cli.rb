@@ -15,12 +15,14 @@ module Gemnesis
       puts Gemnesis::VERSION
     end
 
-    desc "new NAME", "Scaffold a new gemnesis project"
-    method_option :yes, type: :boolean, aliases: "-y", desc: "Skip prompts, use defaults"
+    desc "new NAME", "Scaffold a new gemnesis project (defaults to $GEMNESIS_HOME or ~/gemnesis)"
+    method_option :yes,  type: :boolean, aliases: "-y", desc: "Skip prompts, use defaults"
+    method_option :here, type: :boolean, aliases: "-H", desc: "Create in current directory instead of $GEMNESIS_HOME"
     def new(name)
       require "gemnesis/scaffolder"
       attrs = collect_new_attrs(name)
-      exit Gemnesis::Scaffolder.new(name, attrs: attrs).run
+      base_dir = options[:here] ? Dir.pwd : ensure_home_dir
+      exit Gemnesis::Scaffolder.new(name, attrs: attrs, base_dir: base_dir).run
     rescue Gemnesis::Error => e
       warn "Error: #{e.message}"
       exit 1
@@ -55,6 +57,13 @@ module Gemnesis
       def git_user
         out = `git config user.name 2>/dev/null`.strip
         out.empty? ? nil : out
+      end
+
+      def ensure_home_dir
+        home = File.expand_path(ENV.fetch("GEMNESIS_HOME", "~/gemnesis"))
+        require "fileutils"
+        FileUtils.mkdir_p(home)
+        home
       end
     end
 
