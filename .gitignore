@@ -1,0 +1,53 @@
+# Ruby
+*.gem
+*.rbc
+.bundle/
+.config/
+.yardoc
+_yardoc/
+coverage/
+doc/
+InstalledFiles
+lib/bundler/man/
+pkg/
+rdoc/
+spec/reports/
+spec/examples.txt
+test/tmp/
+test/version_tmp/
+tmp/
+.rspec_status
+
+# Bundler (gem library — lock file gitignored)
+Gemfile.lock
+
+# Environments
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude (local working context only — plans, knowledge cache, project CLAUDE.md)
+.claude/
+
+# gemnesis build artifacts
+out/
+*.bin
+*.o
+*.elf
+*.map
+*.lst

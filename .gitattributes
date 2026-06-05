@@ -1,0 +1,24 @@
+# Normalize line endings to LF
+* text=auto eol=lf
+
+# Ruby
+*.rb       text diff=ruby
+*.gemspec  text diff=ruby
+Gemfile    text diff=ruby
+Rakefile   text diff=ruby
+
+# C / SGDK
+*.c        text diff=c
+*.h        text diff=c
+
+# Docs
+*.md       text
+*.txt      text
+
+# Binary (no diff, no eol conversion)
+*.bin      binary
+*.png      binary
+*.gif      binary
+*.jpg      binary
+*.ico      binary
+*.gem      binary

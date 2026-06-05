@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+require "thor"
+
+module Gemnesis
+  # Thor-based command-line interface for gemnesis.
+  # The 6-command surface is frozen for 0.1.0 — see PLAN-MVP.
+  class CLI < Thor
+    class_option :verbose, type: :boolean, aliases: "-v", desc: "Stream full output"
+
+    def self.exit_on_failure? = true
+
+    desc "version", "Print gemnesis version"
+    def version
+      puts Gemnesis::VERSION
+    end
+
+    desc "new NAME", "Scaffold a new gemnesis project"
+    def new(name)
+      raise NotImplementedError, "scaffolder lands in PLAN-MVP Phase 4 (name=#{name})"
+    end
+
+    desc "doctor", "Check environment (Docker, SGDK image, BlastEm, Ruby)"
+    def doctor
+      raise NotImplementedError, "doctor lands in PLAN-MVP Phase 3"
+    end
+
+    desc "build", "Build ROM via SGDK Docker image"
+    def build
+      raise NotImplementedError, "builder lands in PLAN-MVP Phase 6"
+    end
+
+    # `run` is a Thor reserved word — register the command name, define under an alias
+    desc "run", "Build ROM and launch BlastEm"
+    map "run" => :launch
+    def launch
+      raise NotImplementedError, "emulator launcher lands in PLAN-MVP Phase 7"
+    end
+
+    desc "clean", "Remove build artifacts (out/)"
+    def clean
+      raise NotImplementedError, "clean lands in PLAN-MVP Phase 8"
+    end
+  end
+end
