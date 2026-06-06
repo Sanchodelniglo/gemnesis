@@ -16,6 +16,19 @@ RSpec.describe Gemnesis::Scaffolder do
 
   def scaffold(name) = described_class.new(name, base_dir: @tmp, io: io)
 
+  describe ".humanize_name" do
+    {
+      "plain" => "Plain",
+      "my-cool-game" => "My Cool Game",
+      "my_cool_game" => "My Cool Game",
+      "Mixed-CASE_input" => "Mixed Case Input"
+    }.each do |input, expected|
+      it("turns #{input.inspect} into #{expected.inspect}") do
+        expect(described_class.humanize_name(input)).to eq(expected)
+      end
+    end
+  end
+
   describe "#run" do
     it "creates the project directory with all template files" do
       expect(scaffold("demo").run).to eq(0)

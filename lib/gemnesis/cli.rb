@@ -11,6 +11,7 @@ module Gemnesis
     def self.exit_on_failure? = true
 
     desc "version", "Print gemnesis version"
+    map %w[--version -V] => :version
     def version
       puts Gemnesis::VERSION
     end
@@ -36,22 +37,18 @@ module Gemnesis
         say "Configuring #{name} — press Enter to accept defaults.", :cyan
         {
           title: ask("  Title?  [#{defaults[:title]}]", default: defaults[:title]),
-          author: ask("  Author? [#{defaults[:author]}]",  default: defaults[:author]),
-          region: ask("  Region? [#{defaults[:region]}]",  default: defaults[:region],
-                                                           limited_to: Gemnesis::Scaffolder::VALID_REGIONS)
+          author: ask("  Author? [#{defaults[:author]}]", default: defaults[:author]),
+          region: ask("  Region? [#{defaults[:region]}]", default: defaults[:region],
+                                                          limited_to: Gemnesis::Scaffolder::VALID_REGIONS)
         }
       end
 
       def default_attrs(name)
         {
-          title: humanize_name(name),
+          title: Gemnesis::Scaffolder.humanize_name(name),
           author: git_user || "You",
           region: "ntsc"
         }
-      end
-
-      def humanize_name(name)
-        name.tr("-_", " ").split.map(&:capitalize).join(" ")
       end
 
       def git_user

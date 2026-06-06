@@ -78,18 +78,22 @@ RSpec.describe Gemnesis::Builder do
 
     it "honors GEMNESIS_SGDK_IMAGE override" do
       instance = builder(env: { "GEMNESIS_SGDK_IMAGE" => "custom/sgdk:v1" })
-      allow(instance).to receive(:capture).with("docker", "image", "inspect", "custom/sgdk:v1").and_return(["", ok])
-      allow(instance).to receive(:capture).with("docker", "manifest", "inspect",
-                                                "custom/sgdk:v1").and_return(["", nope])
-      allow(instance).to receive(:capture).with("docker", "run", "--rm", "--platform", "linux/amd64",
-                                                "--user", anything, "-v", anything, "custom/sgdk:v1") do
-        FileUtils.mkdir_p(File.join(@tmp, "out"))
-        File.write(File.join(@tmp, "out", "rom.bin"), "x")
-        ["", ok]
+      seen_run_args = nil
+      allow(instance).to receive(:capture) do |*args|
+        case args[0..2]
+        when %w[docker image inspect]    then ["", ok]
+        when %w[docker manifest inspect] then ["", nope]
+        else
+          seen_run_args = args
+          FileUtils.mkdir_p(File.join(@tmp, "out"))
+          File.write(File.join(@tmp, "out", "rom.bin"), "x")
+          ["", ok]
+        end
       end
 
       instance.run
-      expect(File).to exist(File.join(@tmp, "out", "rom.bin"))
+      expect(seen_run_args).to include("custom/sgdk:v1")
+      expect(seen_run_args).to include("--platform", "linux/amd64")
     end
 
     it "shows last 20 lines of output on build failure (summary mode)" do

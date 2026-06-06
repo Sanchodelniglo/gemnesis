@@ -14,6 +14,12 @@ module Gemnesis
     PNG_FILES = %w[hero.png lab_bg.png].freeze
     VALID_REGIONS = %w[ntsc pal both].freeze
 
+    # Single source of truth for "my-cool-game" → "My Cool Game" — used by the
+    # scaffolder's defaults and by the CLI prompt prefill.
+    def self.humanize_name(name)
+      name.tr("-_", " ").split.map(&:capitalize).join(" ")
+    end
+
     def initialize(name, attrs: {}, base_dir: Dir.pwd, io: $stdout)
       @name = name
       @attrs = attrs
@@ -74,14 +80,10 @@ module Gemnesis
 
       {
         "{{NAME}}" => @name,
-        "{{TITLE}}" => @attrs.fetch(:title, humanize(@name)),
+        "{{TITLE}}" => @attrs.fetch(:title, self.class.humanize_name(@name)),
         "{{AUTHOR}}" => @attrs.fetch(:author, "You"),
         "{{REGION}}" => region
       }
-    end
-
-    def humanize(name)
-      name.tr("-_", " ").split.map(&:capitalize).join(" ")
     end
 
     def announce(target)

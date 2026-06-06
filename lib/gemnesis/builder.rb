@@ -14,7 +14,11 @@ module Gemnesis
   # All shell-outs use Open3 array form — no shell interpolation, no injection
   # via project paths or env-supplied image tags.
   class Builder
-    DEFAULT_IMAGE = "ghcr.io/stephane-d/sgdk:latest"
+    # Pinned by digest so an upstream :latest push can't silently break every
+    # gemnesis user. To upgrade: `docker pull ghcr.io/stephane-d/sgdk:latest`,
+    # then `docker image inspect --format '{{.RepoDigests}}' …` and paste the
+    # new digest here (+ bump CHANGELOG).
+    DEFAULT_IMAGE = "ghcr.io/stephane-d/sgdk@sha256:b0bb8a7171f8dcbf1625685b3a839d23c5c32000019a2023d0e039dd6eadcf31"
     ROM_PATH = "out/rom.bin"
     SUMMARY_TAIL_LINES = 20
 
@@ -53,6 +57,10 @@ module Gemnesis
 
     def write_rom_header(cfg)
       target = File.join(@project_dir, "src", "boot", "rom_head.c")
+      # Skip if the user has taken ownership (file exists and is missing the
+      # auto-generated marker). Protects custom serial/SRAM/region overrides.
+      return if File.exist?(target) && !File.read(target).include?(RomHeader::AUTO_MARKER)
+
       FileUtils.mkdir_p(File.dirname(target))
       File.write(target, RomHeader.new(cfg).to_c)
     end
@@ -92,7 +100,7 @@ module Gemnesis
       # don't pass `make` — empty $@ means "build default target".
       cmd = ["docker", "run", "--rm",
              "--platform", "linux/amd64",
-             "--user", "#{Process.uid}:#{Process.gid}",
+             *user_args,
              "-v", "#{@project_dir}:/src",
              image]
 
@@ -116,6 +124,15 @@ module Gemnesis
 
     def arm64_host?
       RbConfig::CONFIG["host_cpu"] == "arm64"
+    end
+
+    # Process.uid/Process.gid don't exist on Windows. On Mac+Linux they let us
+    # bypass the image's `sgdk` user so files written to /src belong to the
+    # host caller (critical for Linux/CI; harmless on Mac Docker Desktop).
+    def user_args
+      return [] unless Process.respond_to?(:uid)
+
+      ["--user", "#{Process.uid}:#{Process.gid}"]
     end
 
     def capture(*cmd)

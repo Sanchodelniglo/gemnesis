@@ -62,3 +62,8 @@ RSpec/InstanceVariable:
 RSpec/DescribeClass:
   Exclude:
     - "spec/integration/**/*"
+    - "spec/gemnesis/rom_header_idempotency_spec.rb"   # cross-module integration
+    - "spec/gemnesis/scaffold_load_roundtrip_spec.rb"  # cross-module integration
+
+RSpec/ExampleLength:
+  Max: 20

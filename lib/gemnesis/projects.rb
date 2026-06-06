@@ -20,6 +20,7 @@ module Gemnesis
 
       header(home, entries.size)
       entries.sort.each { |name| render_row(home, name) }
+      footer
       0
     end
 
@@ -45,6 +46,11 @@ module Gemnesis
       @io.puts "Projects home: #{home}"
       @io.puts "  #{reason}"
       0
+    end
+
+    def footer
+      @io.puts
+      @io.puts "  (only projects in this home are listed — `--here` projects live elsewhere)"
     end
 
     def render_row(home, name)
