@@ -82,6 +82,12 @@ module Gemnesis
       exit 1
     end
 
+    desc "projects", "List gemnesis projects in $GEMNESIS_HOME with build status"
+    def projects
+      require "gemnesis/projects"
+      exit Gemnesis::Projects.new.run
+    end
+
     desc "clean", "Remove build artifacts (out/, src/config.h, generated resources)"
     def clean
       require "gemnesis/cleaner"
