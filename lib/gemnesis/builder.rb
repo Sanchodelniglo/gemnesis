@@ -85,10 +85,14 @@ module Gemnesis
     def docker_build
       # `--platform linux/amd64` keeps the build deterministic on Apple Silicon:
       # the SGDK image is x86-only and Docker will use Rosetta to emulate.
+      # `--user $UID:$GID` overrides the image's `sgdk` user so files written
+      # to the mounted /src belong to the host user (matters on Linux/CI; Mac
+      # Docker Desktop hides this via its file-sharing UID map).
       # The image's ENTRYPOINT runs `make -f $SGDK_PATH/makefile.gen $@` so we
       # don't pass `make` — empty $@ means "build default target".
       cmd = ["docker", "run", "--rm",
              "--platform", "linux/amd64",
+             "--user", "#{Process.uid}:#{Process.gid}",
              "-v", "#{@project_dir}:/src",
              image]
 
