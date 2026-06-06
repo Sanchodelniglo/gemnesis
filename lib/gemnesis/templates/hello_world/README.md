@@ -10,6 +10,11 @@ open out/rom.bin    # opens in your registered Mega Drive emulator
 gemnesis doctor     # if anything goes wrong, run this first
 ```
 
+## Controls
+
+- **D-pad**: move the hero (each step plays a short PSG blip)
+- **A button**: longer "portal" tone
+
 ## What this does
 
 Boots, prints `GEMNESIS` near the top of the screen, and shows a 16x16 hero
